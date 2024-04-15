@@ -457,8 +457,9 @@ namespace EPPlusTest
 
             // add autofilter
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
             ws.Cells["U19:X24"].AutoFilter = true;
             ExcelPicture pic = ws.Drawings.AddPicture("Pic1", image, format);
             pic.SetPosition(150, 140);
@@ -1134,8 +1135,9 @@ namespace EPPlusTest
             ExcelHyperLink hl = new ExcelHyperLink("http://epplus.codeplex.com");
             hl.ToolTip = "Screen Tip";
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
             ws.Drawings.AddPicture("Pic URI", image, format, hl);
         }
         [TestMethod]
@@ -2258,7 +2260,7 @@ namespace EPPlusTest
         {
             var ws = _pck.Workbook.Worksheets.Add("backimg");
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
             using (var ms = new MemoryStream())
             {
                 stream.CopyTo(ms);
@@ -2276,8 +2278,9 @@ namespace EPPlusTest
             var ws = _pck.Workbook.Worksheets.Add("HeaderImage");
             ws.HeaderFooter.OddHeader.CenteredText = "Before ";
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
             var img = ws.HeaderFooter.OddHeader.InsertPicture(image, format, PictureAlignment.Centered);
             img.Title = "Renamed Image";
             //img.GrayScale = true;

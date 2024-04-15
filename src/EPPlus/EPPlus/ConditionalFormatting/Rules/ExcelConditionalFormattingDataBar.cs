@@ -225,10 +225,9 @@ namespace OfficeOpenXml.ConditionalFormatting
                 var rgb = GetXmlNodeString(_colorPath);
                 if (!string.IsNullOrEmpty(rgb))
                 {
-                    var argb32 = new Argb32(Convert.ToUInt32(rgb, 16));
-                    return Color.FromRgba(argb32.R, argb32.G, argb32.B, argb32.A);
+                    return Color.Parse(rgb);
                 }
-                return Color.White;
+                return Colors.White;
             }
             set
             {

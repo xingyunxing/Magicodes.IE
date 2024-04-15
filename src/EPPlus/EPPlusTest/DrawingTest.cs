@@ -69,8 +69,9 @@ namespace EPPlusTest
         public void Picture()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
             var ws = _pck.Workbook.Worksheets.Add("Picture");
             var pic = ws.Drawings.AddPicture("Pic1", image, format);
 
@@ -85,6 +86,12 @@ namespace EPPlusTest
             pic = ws.Drawings.AddPicture("Pic3", image, format);
             pic.SetPosition(400, 200);
             pic.SetSize(150);
+
+            var bitmap = SkiaSharp.SKImage.FromEncodedData(Path.Combine(_clipartPath, "BitmapImage.gif"));
+            var path = "E:\\ofbiz\\q5c1sfju.1dv.gif";
+            File.Delete(path);
+            using var file = File.Create(path);
+            bitmap.Encode(SKEncodedImageFormat.Jpeg, 100).SaveTo(file);
 
             //pic = ws.Drawings.AddPicture("Pic4", new FileInfo(Path.Combine(_clipartPath, "Vector Drawing.wmf")));
             pic = ws.Drawings.AddPicture("Pic5", new FileInfo(Path.Combine(_clipartPath, "BitmapImage.gif")));
@@ -124,8 +131,9 @@ namespace EPPlusTest
         {
             var ws = _pck.Workbook.Worksheets.Add("DrawingPosSize");
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
 
             var pic = ws.Drawings.AddPicture("Pic1", image, format);
             pic.SetPosition(1, 0, 1, 0);
@@ -788,8 +796,9 @@ namespace EPPlusTest
         public void DeleteDrawing()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
             var ws = _pck.Workbook.Worksheets.Add("DeleteDrawing1");
             var chart1 = ws.Drawings.AddChart("Chart1", eChartType.Line);
             var chart2 = ws.Drawings.AddChart("Chart2", eChartType.Line);
@@ -1000,8 +1009,9 @@ namespace EPPlusTest
         public void DrawingRowheightDynamic()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-            var image = Image.Load(stream, out var format);
+            var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+            var image = Image.Decode(stream);
+            var format = IImageFormat.Jpeg;
             var ws = _pck.Workbook.Worksheets.Add("PicResize");
             ws.Cells["A1"].Value = "test";
             ws.Cells["A1"].Style.Font.Name = "Symbol";

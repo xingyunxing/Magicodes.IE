@@ -60,11 +60,10 @@ namespace OfficeOpenXml.Drawing
                 UriPic = UriHelper.ResolvePartUri(drawings.UriDrawing, RelPic.TargetUri);
 
                 Part = drawings.Part.Package.GetPart(UriPic);
-                // Image = Image.Load(Part.GetStream(), out var format);
-                Image = Image.Load(Part.GetStream());
-                var format = Image.GetImageFormat(Part.GetStream());
-                ImageFormat = format;
-                byte[] iby = ImageCompat.GetImageAsByteArray(Image, format);
+                var iby = Part.GetStream().ToArray();
+                Image = Image.Decode(iby);
+                ImageFormat = Image.Format;
+                // Image = Image.Decode(Part.GetStream(), out var format);
                 var ii = _drawings._package.LoadImage(iby, UriPic, Part);
                 ImageHash = ii.Hash;
 
@@ -120,41 +119,35 @@ namespace OfficeOpenXml.Drawing
 
             //Changed to stream 2/4-13 (issue 14834). Thnx SClause
             var package = drawings.Worksheet._package.Package;
-            using (var imageStream = new FileStream(imageFile.FullName, FileMode.Open, FileAccess.Read))
+            var img = File.ReadAllBytes(imageFile.FullName);
+            Image = Image.Decode(img);
+            ImageFormat = Image.Format;
+            UriPic = GetNewUri(package, "/xl/media/{0}" + imageFile.Name);
+            var ii = _drawings._package.AddImage(img, UriPic, ContentType);
+            string relID;
+            if (!drawings._hashes.ContainsKey(ii.Hash))
             {
-                // Image = Image.Load(imageStream, out var format);
-                Image = Image.Load(imageStream);
-                var format = Image.GetImageFormat(imageStream);
-                ImageFormat = format;
-
-                var img = ImageCompat.GetImageAsByteArray(Image, format);
-                UriPic = GetNewUri(package, "/xl/media/{0}" + imageFile.Name);
-                var ii = _drawings._package.AddImage(img, UriPic, ContentType);
-                string relID;
-                if (!drawings._hashes.ContainsKey(ii.Hash))
-                {
-                    Part = ii.Part;
-                    RelPic = drawings.Part.CreateRelationship(UriHelper.GetRelativeUri(drawings.UriDrawing, ii.Uri),
-                        Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/image");
-                    relID = RelPic.Id;
-                    _drawings._hashes.Add(ii.Hash, relID);
-                    AddNewPicture(img, relID);
-                }
-                else
-                {
-                    relID = drawings._hashes[ii.Hash];
-                    var rel = _drawings.Part.GetRelationship(relID);
-                    UriPic = UriHelper.ResolvePartUri(rel.SourceUri, rel.TargetUri);
-                }
-
-                ImageHash = ii.Hash;
-                _height = Image.Height;
-                _width = Image.Width;
-                SetPosDefaults(Image);
-                //Create relationship
-                node.SelectSingleNode("xdr:pic/xdr:blipFill/a:blip/@r:embed", NameSpaceManager).Value = relID;
-                package.Flush();
+                Part = ii.Part;
+                RelPic = drawings.Part.CreateRelationship(UriHelper.GetRelativeUri(drawings.UriDrawing, ii.Uri),
+                    Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/image");
+                relID = RelPic.Id;
+                _drawings._hashes.Add(ii.Hash, relID);
+                AddNewPicture(img, relID);
             }
+            else
+            {
+                relID = drawings._hashes[ii.Hash];
+                var rel = _drawings.Part.GetRelationship(relID);
+                UriPic = UriHelper.ResolvePartUri(rel.SourceUri, rel.TargetUri);
+            }
+
+            ImageHash = ii.Hash;
+            _height = Image.Height;
+            _width = Image.Width;
+            SetPosDefaults(Image);
+            //Create relationship
+            node.SelectSingleNode("xdr:pic/xdr:blipFill/a:blip/@r:embed", NameSpaceManager).Value = relID;
+            package.Flush();
         }
 
         //Add a new image to the compare collection
@@ -170,7 +163,7 @@ namespace OfficeOpenXml.Drawing
 
         private string SavePicture(Image image, IImageFormat format)
         {
-            byte[] img = ImageCompat.GetImageAsByteArray(image, format);
+            byte[] img = image.GetContent();
 
             var ii = _drawings._package.AddImage(img);
 
@@ -199,8 +192,8 @@ namespace OfficeOpenXml.Drawing
         private void SetPosDefaults(Image image)
         {
             EditAs = eEditAs.OneCell;
-            SetPixelWidth(image.Width, (float)image.Metadata.HorizontalResolution);
-            SetPixelHeight(image.Height, (float)image.Metadata.VerticalResolution);
+            SetPixelWidth(image.Width, (float)image.HorizontalResolution);
+            SetPixelHeight(image.Height, (float)image.VerticalResolution);
         }
 
         private string PicStartXml()
@@ -256,7 +249,7 @@ namespace OfficeOpenXml.Drawing
         /// </summary>
         public IImageFormat ImageFormat { get; private set; }
 
-        internal string ContentType => ImageFormat?.DefaultMimeType;
+        internal string ContentType => Image.MimeType(ImageFormat);
 
         /// <summary>
         /// Set the size of the image in percent from the orginal size
@@ -277,8 +270,8 @@ namespace OfficeOpenXml.Drawing
                 _width = (int)(_width * ((decimal)Percent / 100));
                 _height = (int)(_height * ((decimal)Percent / 100));
 
-                SetPixelWidth(_width, (float) Image.Metadata.HorizontalResolution);
-                SetPixelHeight(_height, (float) Image.Metadata.VerticalResolution);
+                SetPixelWidth(_width, (float) Image.HorizontalResolution);
+                SetPixelHeight(_height, (float) Image.VerticalResolution);
             }
         }
 
@@ -348,9 +341,9 @@ namespace OfficeOpenXml.Drawing
         {
             base.Dispose();
             _hyperlink = null;
-            Image.Dispose();
+            Image?.Dispose();
             Image = null;
-            ImageFormat = JpegFormat.Instance;
+            ImageFormat = IImageFormat.Jpeg;
         }
     }
 }

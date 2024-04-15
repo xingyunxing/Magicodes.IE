@@ -78,13 +78,12 @@ namespace OfficeOpenXml.ConditionalFormatting
         {
             try
             {
-                var rgba32 = new Rgba32(uint.Parse(colorCode.Replace("#", ""), NumberStyles.HexNumber));
-                return Color.FromRgba(rgba32.R, rgba32.G, rgba32.B, rgba32.A);
+                return Color.Parse(colorCode);
             }
             catch
             {
                 // Assume white is the default color (instead of giving an error)
-                return Color.White;
+                return Colors.White;
             }
         }
 

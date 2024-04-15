@@ -78,13 +78,10 @@ namespace OfficeOpenXml
                 DeleteAllNode(BACKGROUNDPIC_PATH);
                 return;
             }
-            Image = Image.Load(imageBytes);
-            //Image = Image.Load(imageBytes, out var imageFormat);
-            using (MemoryStream imageStream = new MemoryStream(imageBytes))
-            {
-                var imageFormat = Image.GetImageFormat(imageStream);
-                ImageFormat = imageFormat;
-            }
+            Image = Image.Decode(imageBytes);
+            ImageFormat = Image.Format;
+            
+            //Image = Image.Decode(imageBytes, out var imageFormat);
 
             var imageInfo = _workSheet.Workbook._package.AddImage(imageBytes);
             var rel = _workSheet.Part.CreateRelationship(imageInfo.Uri, Packaging.TargetMode.Internal,
@@ -104,10 +101,10 @@ namespace OfficeOpenXml
             try
             {
                 var fileBytes = File.ReadAllBytes(pictureFile.FullName);
-                //Image.Load(fileBytes, out var format);
+                //Image.Decode(fileBytes, out var format);
                 var format = Image.DetectFormat(fileBytes);
 
-                string contentType = format.DefaultMimeType;
+                string contentType = Image.MimeType(format);
                 var imageUri = XmlHelper.GetNewUri(_workSheet._package.Package,
                     "/xl/media/" +
                     pictureFile.Name.Substring(0, pictureFile.Name.Length - pictureFile.Extension.Length) + "{0}" +
@@ -144,7 +141,7 @@ namespace OfficeOpenXml
             var relID = GetXmlNodeString(BACKGROUNDPIC_PATH);
             if (relID != "")
             {
-                var img = ImageCompat.GetImageAsByteArray(Image, ImageFormat);
+                var img = Image.GetContent();
 
                 var ii = _workSheet.Workbook._package.GetImageInfo(img);
 

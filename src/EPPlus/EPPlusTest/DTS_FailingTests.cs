@@ -17,8 +17,9 @@ namespace EPPlusTest
             using (var pck = new ExcelPackage())
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-                var image = Image.Load(stream, out var format);
+                var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+                var image = Image.Decode(stream);
+                var format = IImageFormat.Jpeg;
                 var ws = pck.Workbook.Worksheets.Add("original");
                 ws.Drawings.AddPicture("Pic1", image, format);
                 pck.Workbook.Worksheets.Copy("original", "copy");
@@ -40,8 +41,9 @@ namespace EPPlusTest
             using (var pck = new ExcelPackage(new MemoryStream()))
             {
                 var assembly = Assembly.GetExecutingAssembly();
-                var stream = assembly.GetManifestResourceStream(@"Resources\Test1.jpg");
-                var image = Image.Load(stream, out var format);
+                var stream = assembly.GetManifestResourceStream(@"EPPlusTest.Resources.Test1.jpg");
+                var image = Image.Decode(stream);
+                var format = IImageFormat.Jpeg;
                 var ws = pck.Workbook.Worksheets.Add("original");
                 ws.Drawings.AddPicture("Pic1", image, format);
                 pck.Workbook.Worksheets.Copy("original", "copy");

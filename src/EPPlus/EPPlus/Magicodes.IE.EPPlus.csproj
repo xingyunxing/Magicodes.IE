@@ -1,9 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\..\..\common.props"></Import>
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;</TargetFrameworks>
+		<!--<TargetFrameworks>netstandard2.1;netstandard2.0;net6.0;net7.0;net8.0</TargetFrameworks>-->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<NeutralLanguage />
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
@@ -53,14 +55,14 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.1.1" />
-		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.0" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="SixLabors.ImageSharp" Version="3.0.0" />
-		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.1" />
-		<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+		<!--<PackageReference Include="SixLabors.ImageSharp" Version="3.0.0" />-->
+		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="6.0.4" />
+		<!--<PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />-->
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">

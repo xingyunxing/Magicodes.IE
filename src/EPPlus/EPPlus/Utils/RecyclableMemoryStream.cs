@@ -1,38 +1,37 @@
 ﻿using Microsoft.IO;
-using System;
 using System.IO;
 
 namespace OfficeOpenXml.Utils
 {
     public static class RecyclableMemoryStream
     {
-        private static readonly Lazy<RecyclableMemoryStreamManager> recyclableMemoryStreamManager = new Lazy<RecyclableMemoryStreamManager>();
-        private static RecyclableMemoryStreamManager RecyclableMemoryStreamManager
+        private static readonly RecyclableMemoryStreamManager _memoryManager = new RecyclableMemoryStreamManager();
+
+        static RecyclableMemoryStream()
         {
-            get
+            _memoryManager = new RecyclableMemoryStreamManager(new RecyclableMemoryStreamManager.Options()
             {
-                var recyclableMemoryStream = recyclableMemoryStreamManager.Value;
-                recyclableMemoryStream.MaximumFreeSmallPoolBytes = 64 * 1024 * 1024;
-                recyclableMemoryStream.MaximumFreeLargePoolBytes = 64 * 1024 * 32;
-                recyclableMemoryStream.AggressiveBufferReturn = true;
-                return recyclableMemoryStream;
-            }
+                //MaximumSmallPoolFreeBytes = 64 * 1024 * 32,
+                //MaximumLargePoolFreeBytes = 64 * 1024 * 1024,
+                //AggressiveBufferReturn = true
+            });
         }
+
         private const string TagSource = "Magicodes.EPPlus";
 
         internal static MemoryStream GetStream()
         {
-            return RecyclableMemoryStreamManager.GetStream(TagSource);
+            return _memoryManager.GetStream(TagSource);
         }
 
         internal static MemoryStream GetStream(byte[] array)
         {
-            return RecyclableMemoryStreamManager.GetStream(array);
+            return _memoryManager.GetStream(array);
         }
 
         internal static MemoryStream GetStream(int capacity)
         {
-            return RecyclableMemoryStreamManager.GetStream(TagSource, capacity);
+            return _memoryManager.GetStream(TagSource, capacity);
         }
     }
 }

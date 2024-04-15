@@ -118,7 +118,7 @@ namespace OfficeOpenXml
     ///             range.Style.Font.Bold = true;
     ///             range.Style.Fill.PatternType = ExcelFillStyle.Solid;
     ///             range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
-    ///             range.Style.Font.Color.SetColor(Color.White);
+    ///             range.Style.Font.Color.SetColor(Colors.White);
     ///         }
     ///
     ///         worksheet.Cells["A5:E5"].Style.Border.Top.Style = ExcelBorderStyle.Thin;

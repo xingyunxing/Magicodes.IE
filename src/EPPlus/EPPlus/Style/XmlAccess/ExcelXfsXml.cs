@@ -689,8 +689,8 @@ namespace OfficeOpenXml.Style.XmlAccess
             else
             {
                 fill = new ExcelGradientFillXml(Fill.NameSpaceManager);
-                fill.GradientColor1.SetColor(Color.White);
-                fill.GradientColor2.SetColor(Color.FromRgb(79, 129, 189));
+                fill.GradientColor1.SetColor(Colors.White);
+                fill.GradientColor2.SetColor(new Color(79, 129, 189));
                 fill.Type = ExcelFillGradientType.Linear;
                 fill.Degree = 90;
                 fill.Top = double.NaN;

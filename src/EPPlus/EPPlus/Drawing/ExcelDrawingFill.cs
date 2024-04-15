@@ -155,12 +155,11 @@ namespace OfficeOpenXml.Drawing
                 string col = GetXmlNodeString(_fillPath + ColorPath);
                 if (col == "")
                 {
-                    return Color.FromRgb(79, 129, 189);
+                    return new Color(79, 129, 189);
                 }
                 else
                 {
-                    var argb32 = new Argb32(uint.Parse(col, NumberStyles.AllowHexSpecifier));
-                    return Color.FromRgba(argb32.R, argb32.G, argb32.B, argb32.A);
+                    return Color.Parse(col);
                 }
             }
             set
@@ -193,7 +192,7 @@ namespace OfficeOpenXml.Drawing
                 if (_fillTypeNode == null)
                 {
                     _style = eFillStyle.SolidFill;
-                    Color = Color.FromRgb(79, 129, 189);   //Set a Default color
+                    Color = new Color(79, 129, 189);   //Set a Default color
                 }
                 else if (_style != eFillStyle.SolidFill)
                 {

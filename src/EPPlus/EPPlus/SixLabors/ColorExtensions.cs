@@ -7,8 +7,7 @@ namespace Magicodes.IE.EPPlus.SixLabors
     {
         public static string ToArgbHex(this Color color)
         {
-            var rgba = color.ToPixel<Rgba32>();
-            return rgba.A.ToString("X2") + rgba.R.ToString("X2") + rgba.G.ToString("X2") + rgba.B.ToString("X2");
+            return $"{color.Alpha:X2}{color.Red:X2}{color.Green:X2}{color.Blue:X2}";
         }
     }
 }

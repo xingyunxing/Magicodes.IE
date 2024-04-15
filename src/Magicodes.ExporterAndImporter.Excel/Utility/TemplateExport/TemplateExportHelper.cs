@@ -701,8 +701,8 @@ namespace Magicodes.ExporterAndImporter.Excel.Utility.TemplateExport
                                     {
                                         using (Stream imageStream = File.OpenRead(imageUrl))
                                         {
-                                            image = Image.Load(imageStream);
-                                            format = image.GetImageFormat(imageStream);
+                                            image = Image.Decode(imageStream);
+                                            format = image.Format;
                                         }
 
                                         // image = Image.Load(imageUrl, out format);

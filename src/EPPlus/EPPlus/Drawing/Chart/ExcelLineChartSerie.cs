@@ -125,11 +125,11 @@ namespace OfficeOpenXml.Drawing.Chart
                 string color = GetXmlNodeString(LINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return Colors.Black;
                 }
                 else
                 {
-                    return Color.ParseHex(color);
+                    return Color.Parse(color);
                 }
             }
             set
@@ -215,11 +215,11 @@ namespace OfficeOpenXml.Drawing.Chart
                 string color = GetXmlNodeString(MARKERLINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return Colors.Black;
                 }
                 else
                 {
-                    return Color.ParseHex(color);
+                    return Color.Parse(color);
                 }
             }
             set

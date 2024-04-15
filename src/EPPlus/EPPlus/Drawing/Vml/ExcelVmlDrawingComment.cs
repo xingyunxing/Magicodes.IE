@@ -167,18 +167,18 @@ namespace OfficeOpenXml.Drawing.Vml
                 string col = GetXmlNodeString(BACKGROUNDCOLOR_PATH);
                 if (col == "")
                 {
-                    return Color.FromRgb(0xff, 0xff, 0xe1);
+                    return new Color(0xff, 0xff, 0xe1);
                 }
                 else
                 {
                     if (col.StartsWith("#")) col = col.Substring(1, col.Length - 1);
                     if (uint.TryParse(col, System.Globalization.NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var res))
                     {
-                        return Color.ParseHex(col);
+                        return Color.Parse(col);
                     }
                     else
                     {
-                        return Color.Transparent;
+                        return Colors.Transparent;
                     }
                 }
             }
@@ -247,18 +247,18 @@ namespace OfficeOpenXml.Drawing.Vml
                 string col = GetXmlNodeString(LINECOLOR_PATH);
                 if (col == "")
                 {
-                    return Color.Black;
+                    return Colors.Black;
                 }
                 else
                 {
                     if (col.StartsWith("#")) col = col.Substring(1, col.Length - 1);
                     if (uint.TryParse(col, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var res))
                     {
-                        return Color.ParseHex(col);
+                        return Color.Parse(col);
                     }
                     else
                     {
-                        return Color.Transparent;
+                        return Colors.Transparent;
                     }
                 }
             }

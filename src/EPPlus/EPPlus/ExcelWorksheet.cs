@@ -758,11 +758,11 @@ namespace OfficeOpenXml
                 string col = GetXmlNodeString(tabColorPath);
                 if (col == "")
                 {
-                    return Color.Transparent;
+                    return Colors.Transparent;
                 }
                 else
                 {
-                    return Color.ParseHex(col);
+                    return Color.Parse(col);
                 }
             }
             set

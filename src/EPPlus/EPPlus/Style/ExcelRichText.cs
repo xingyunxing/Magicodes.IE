@@ -299,12 +299,11 @@ namespace OfficeOpenXml.Style
                 string col = GetXmlNodeString(COLOR_PATH);
                 if (col == "")
                 {
-                    return Color.Transparent;
+                    return Colors.Transparent;
                 }
                 else
                 {
-                    var argb32 = new Argb32(uint.Parse(col, NumberStyles.AllowHexSpecifier));
-                    return Color.FromRgba(argb32.R, argb32.G, argb32.B, argb32.A);
+                    return Color.Parse(col);
                 }
             }
             set

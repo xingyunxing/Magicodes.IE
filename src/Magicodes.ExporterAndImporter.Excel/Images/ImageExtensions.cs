@@ -1,15 +1,15 @@
 ﻿using System.IO;
 using System;
 using System.Net;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Metadata;
-using SkiaSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Advanced;
-using SixLabors.ImageSharp.Metadata.Profiles.Exif;
-using Magicodes.IE.EPPlus;
-using SixLabors.ImageSharp.Memory;
+//using SixLabors.ImageSharp;
+//using SixLabors.ImageSharp.Formats;
+//using SixLabors.ImageSharp.Metadata;
+//using SkiaSharp;
+//using SixLabors.ImageSharp.PixelFormats;
+//using SixLabors.ImageSharp.Advanced;
+//using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+//using Magicodes.IE.EPPlus;
+//using SixLabors.ImageSharp.Memory;
 using System.Text.RegularExpressions;
 
 namespace Magicodes.IE.Excel.Images
@@ -18,19 +18,14 @@ namespace Magicodes.IE.Excel.Images
     {
         public static string SaveTo(this Image image, string path)
         {
-            image.Save(path);
+            using var stream = File.Create(path);
+            image.Encode(stream);
             return path;
         }
 
         public static string ToBase64String(this Image image, IImageFormat format)
         {
-            using (var ms = new MemoryStream())
-            {
-                image.Save(ms, format);
-                ms.Position = 0;
-                var bytes = ms.ToArray();
-                return Convert.ToBase64String(bytes);
-            }
+            return Convert.ToBase64String(image.GetContent());
         }
 
         /// <summary>
@@ -51,16 +46,8 @@ namespace Magicodes.IE.Excel.Images
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
                         webStream.CopyTo(memoryStream);
-                        memoryStream.Position = 0;
-
-                        var image = Image.Load(memoryStream);
-                        format = image.GetImageFormat(memoryStream);
-
-                        if (image.Metadata.HorizontalResolution == 0 && image.Metadata.VerticalResolution == 0)
-                        {
-                            image.Metadata.HorizontalResolution = ImageMetadata.DefaultHorizontalResolution;
-                            image.Metadata.VerticalResolution = ImageMetadata.DefaultVerticalResolution;
-                        }
+                        var image = Image.Decode(memoryStream);
+                        format = image.Format;
                         return image;
                     }
                 }
@@ -76,12 +63,9 @@ namespace Magicodes.IE.Excel.Images
         public static Image Base64StringToImage(this string base64String, out IImageFormat format)
         {
             byte[] bytes = Convert.FromBase64String(CleanupBase64String(base64String));
-            using (MemoryStream stream = new MemoryStream(bytes))
-            {
-                Image image = Image.Load(stream);
-                format = image.GetImageFormat(stream);
-                return image;
-            }
+            var image= Image.Decode(bytes);
+            format = image.Format;
+            return image;
         }
 
         /// <summary>

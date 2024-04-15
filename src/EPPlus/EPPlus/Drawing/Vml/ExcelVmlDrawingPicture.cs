@@ -140,7 +140,7 @@ namespace OfficeOpenXml.Drawing.Vml
                 if (pck.PartExists(ImageUri))
                 {
                     var part = pck.GetPart(ImageUri);
-                    return Image.Load(part.GetStream());
+                    return Image.Decode(part.GetStream());
                 }
 
                 return null;

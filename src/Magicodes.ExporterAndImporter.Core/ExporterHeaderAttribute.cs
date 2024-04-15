@@ -13,7 +13,7 @@
 
 using System;
 using Magicodes.IE.Core;
-using SixLabors.ImageSharp;
+//using SixLabors.ImageSharp;
 
 namespace Magicodes.ExporterAndImporter.Core
 {
@@ -35,10 +35,7 @@ namespace Magicodes.ExporterAndImporter.Core
             IsAutoFit = isAutoFit;
             AutoCenterColumn = autoCenterColumn;
             Width = width;
-            if (fontColor != KnownColor.Empty)
-            {
-                FontColor = Color.Parse(fontColor.ToString("G"));
-            }
+            FontColor = new Color((uint)fontColor);
         }
 
         /// <summary>

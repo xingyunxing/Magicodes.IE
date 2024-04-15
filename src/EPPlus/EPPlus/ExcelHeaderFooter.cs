@@ -130,7 +130,7 @@ namespace OfficeOpenXml
             string id = ValidateImage(Alignment);
 
             //Add the image
-            var img = ImageCompat.GetImageAsByteArray(picture, format);
+            var img = picture.GetContent();
 
             var ii = _ws.Workbook._package.AddImage(img);
 
@@ -153,21 +153,18 @@ namespace OfficeOpenXml
                     throw (new FileNotFoundException(string.Format("{0} is missing", pictureFile.FullName)));
                 }
                 
-                // Picture = Image.Load(pictureFile.FullName, out var format);
-                Picture = Image.Load(pictureFile.FullName);
-                using (Stream imageStream = pictureFile.OpenRead())
-                {
-                    var format = Picture.GetImageFormat(imageStream);
-                    string contentType = format.DefaultMimeType;
-                    var uriPic = XmlHelper.GetNewUri(_ws._package.Package, "/xl/media/" + pictureFile.Name.Substring(0, pictureFile.Name.Length - pictureFile.Extension.Length) + "{0}" + pictureFile.Extension);
-                    var imgBytes = ImageCompat.GetImageAsByteArray(Picture, format);
+                // Picture = Image.Decode(pictureFile.FullName, out var format);
+                var imgBytes = File.ReadAllBytes(pictureFile.FullName);
+                Picture = Image.Decode(imgBytes);
+                var format = Picture.Format;
+                string contentType = Picture.ContentType;
+                var uriPic = XmlHelper.GetNewUri(_ws._package.Package, "/xl/media/" + pictureFile.Name.Substring(0, pictureFile.Name.Length - pictureFile.Extension.Length) + "{0}" + pictureFile.Extension);
 
 
-                    var ii = _ws.Workbook._package.AddImage(imgBytes, uriPic, contentType);
+                var ii = _ws.Workbook._package.AddImage(imgBytes, uriPic, contentType);
 
-                    return AddImage(Picture, format, id, ii);
-                }
-                
+                return AddImage(Picture, format, id, ii);
+
             }
             catch (Exception ex)
             {
@@ -177,8 +174,8 @@ namespace OfficeOpenXml
 
         private ExcelVmlDrawingPicture AddImage(Image picture, IImageFormat format, string id, ExcelPackage.ImageInfo ii)
         {
-            double width = picture.Width * 72 / picture.Metadata.HorizontalResolution,      //Pixel --> Points
-                   height = picture.Height * 72 / picture.Metadata.VerticalResolution;      //Pixel --> Points
+            double width = picture.Width * 72 / picture.HorizontalResolution,      //Pixel --> Points
+                   height = picture.Height * 72 / picture.VerticalResolution;      //Pixel --> Points
             //Add VML-drawing            
             return _ws.HeaderFooter.Pictures.Add(id, ii.Uri, "", width, height);
         }

@@ -149,15 +149,15 @@ namespace OfficeOpenXml.Drawing.Chart
                 string color = GetXmlNodeString(LINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return Colors.Black;
                 }
                 else
                 {
-                    Color c = Color.ParseHex(color);
+                    Color c = Color.Parse(color);
                     int a = getAlphaChannel(LINECOLOR_PATH);
                     if (a != 255)
                     {
-                        c = c.WithAlpha(a);
+                        c = c.WithAlpha((byte)a);
                     }
                     return c;
                 }
@@ -217,16 +217,15 @@ namespace OfficeOpenXml.Drawing.Chart
                 string color = GetXmlNodeString(MARKERCOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return Colors.Black;
                 }
                 else
                 {
-                    var argb32 = new Argb32(Convert.ToUInt32(color, 16));
-                    Color c = Color.FromRgba(argb32.R, argb32.G, argb32.B, argb32.A);
+                    var c = Color.Parse(color);
                     int a = getAlphaChannel(MARKERCOLOR_PATH);
                     if (a != 255)
                     {
-                        c = c.WithAlpha(a);
+                        c = c.WithAlpha((byte)a);
                     }
                     return c;
                 }
@@ -282,16 +281,15 @@ namespace OfficeOpenXml.Drawing.Chart
                 string color = GetXmlNodeString(MARKERLINECOLOR_PATH);
                 if (color == "")
                 {
-                    return Color.Black;
+                    return Colors.Black;
                 }
                 else
                 {
-                    var argb32 = new Argb32(Convert.ToUInt32(color, 16));
-                    Color c = Color.FromRgba(argb32.R, argb32.G, argb32.B, argb32.A);
+                    var c = Color.Parse(color);
                     int a = getAlphaChannel(MARKERLINECOLOR_PATH);
                     if (a != 255)
                     {
-                        c = c.WithAlpha(a);
+                        c = c.WithAlpha((byte)a);
                     }
                     return c;
                 }
@@ -316,15 +314,15 @@ namespace OfficeOpenXml.Drawing.Chart
         /// </remarks>
         private void setAlphaChannel(Color c, string xPath)
         {
-            var argb32 = c.ToPixel<Argb32>();
+            //var argb32 = c.ToPixel<Argb32>();
             //check 4 Alpha-values
-            if (argb32.A != 255)
+            if (c.Alpha != 255)
             { //opaque color => alpha == 255 //source: https://msdn.microsoft.com/en-us/library/1hstcth9%28v=vs.110%29.aspx
                 //check path
                 string s = xPath4Alpha(xPath);
                 if (s.Length > 0)
                 {
-                    string alpha = ((argb32.A == 0) ? 0 : (100 - argb32.A) * 1000).ToString(); //note: excel writes 100% transparency (alpha=0) as "0" and not as "100000"
+                    string alpha = ((c.Alpha == 0) ? 0 : (100 - c.Alpha) * 1000).ToString(); //note: excel writes 100% transparency (alpha=0) as "0" and not as "100000"
                     SetXmlNodeString(s, alpha, true);
                 }
             }

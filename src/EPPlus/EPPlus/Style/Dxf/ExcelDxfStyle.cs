@@ -87,7 +87,7 @@ namespace OfficeOpenXml.Style.Dxf
             string rgb = helper.GetXmlNodeString(path + "/@rgb");
             if (rgb != "")
             {
-                ret.Color = Color.FromRgba(byte.Parse(rgb.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
+                ret.Color = new Color(byte.Parse(rgb.Substring(0, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
                                             byte.Parse(rgb.Substring(2, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
                                             byte.Parse(rgb.Substring(4, 2), System.Globalization.NumberStyles.AllowHexSpecifier),
                                             byte.Parse(rgb.Substring(6, 2), System.Globalization.NumberStyles.AllowHexSpecifier));
